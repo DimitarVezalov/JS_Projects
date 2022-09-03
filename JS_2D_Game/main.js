@@ -17,7 +17,7 @@ window.addEventListener('load', function(){
         }
 
         update(){
-            this._player.update();
+            this._player.update(this._input._keys);
         }
 
         draw(context){
