@@ -77,8 +77,9 @@ export class Player{
         return this._y >= this._game._height - this._height - this._game._groundMargin;
     }
 
-    setState(state){
+    setState(state, speed){
         this._currentState = this._states[state];
+        this._game._speed = this._game._maxSpeed * speed;
         this._currentState.enter();
     }
 }
