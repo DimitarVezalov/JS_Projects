@@ -52,7 +52,13 @@ window.addEventListener('load', function(){
         }
 
         addEnemy(){
+            if(this._speed > 0 && Math.random() < 0.5){
+                this._enemies.push(new GroundEnemy(this));
+            }else if(this._speed > 0){
+                this._enemies.push(new ClimbingEnemy(this));
+            }
             this._enemies.push(new FlyingEnemy(this)); 
+            
         }
     }
 

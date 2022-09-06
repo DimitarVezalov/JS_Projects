@@ -10,7 +10,7 @@ class Enemy {
 
     update(deltaTime){
         // movement
-        this._x -= this._speedX;
+        this._x -= this._speedX + this._game._speed;
         this._y += this._speedY;
 
         if(this._frameTimer > this._frameInterval){
@@ -43,23 +43,70 @@ export class FlyingEnemy extends Enemy{
         this._game = game
         this._width = 60;
         this._height = 44;
-        this._x = this._game._width;
-        this._y = Math.random() * this._game._height * 0.6;
-        this._speedX = 2;
+        this._x = this._game._width + Math.random() * this._game._width * 0.5;
+        this._y = Math.random() * this._game._height * 0.55;
+        this._speedX = Math.random() + 1;
         this._speedY = 0;
         this._maxFrame = 5;
         this._image = document.getElementById('enemy_fly');
+        this._angle = 0;
+        this._angleCurve = Math.random() * 0.1 + 0.1; 
     }
 
     update(deltaTime){
         super.update(deltaTime);
+        this._angle += this._angleCurve
+        this._y += Math.sin(this._angle);
     }
 }
 
 export class GroundEnemy extends Enemy{
-
+    constructor(game){
+        super();
+        this._game = game;
+        this._width = 60;
+        this._height = 87;
+        this._x = this._game._width;
+        this._y = this._game._height - this._height - this._game._groundMargin;
+        this._image = document.getElementById("enemy_plant");
+        this._speedX = 0;
+        this._speedY = 0;
+        this._maxFrame = 1;
+    }
 }
 
 export class ClimbingEnemy extends Enemy{
+    constructor(game){
+        super();
+        this._game = game;
+        this._width = 120;
+        this._height = 144;
+        this._x = this._game._width;
+        this._y = Math.random() * this._game._height * 0.5
+        this._image = document.getElementById('enemy_spider_big');
+        this._speedX = 0;
+        this._speedY = Math.random() > 0.5 ? 1 : -1;
+        this._maxFrame = 5;
+    }   
 
+    update(deltaTime){
+        super.update(deltaTime);
+         
+        if(this._y > this._game._height - this._height - this._game._groundMargin){
+            this._speedY *= -1
+        }
+
+        if(this._y < -this._height){
+            this._markedForDeletion = true;
+        }
+    }
+
+    draw(context){
+        super.draw(context);
+        context.beginPath();
+        context.moveTo(this._x + this._width / 2, 0);
+        context.lineTo(this._x + this._width / 2, this._y + 50);
+        context.stroke(); 
+        
+    }   
 }
