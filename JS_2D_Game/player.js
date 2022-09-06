@@ -17,7 +17,7 @@ export class Player{
         this._frameInterval = 1000 / this._fps;
         this._frameTimer = 0;
         this._hSpeed = 0;
-        this._maxSpeed = 10;
+        this._maxSpeed = 5;
         this._states = [new Sitting(this), new Running(this), new Jumping(this), new Falling(this)];
         this._currentState = this._states[0];
         this._currentState.enter()
