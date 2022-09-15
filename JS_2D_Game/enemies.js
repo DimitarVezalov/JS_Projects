@@ -26,7 +26,7 @@ class Enemy {
             this._frameTimer += deltaTime;
         }
 
-        //check if enemies are of screen and remove them from the array
+        //check if enemies are of screen and remove them from the array---
         if(this._x + this._width < 0){
             this._markedForDeletion = true;
         }
