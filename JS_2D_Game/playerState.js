@@ -1,3 +1,5 @@
+import {Dust, Fire} from './particles.js';
+
 const states = {
     SITTING: 0,
     RUNNING: 1,
@@ -9,115 +11,118 @@ const states = {
 }
 
 class State {
-    constructor(state){
+    constructor(state, game){
         this._state = state;
+        this._game = game;
     }
 }
 
 export class Sitting extends State{
-    constructor(player){
-        super('SITTING');
-        this._player = player;
+    constructor(game){
+        super('SITTING', game);
     }
 
     enter(){
-        this._player._frameX = 0;
-        this._player._maxFrame = 4;
-        this._player._frameY = 5;
+        this._game._player._frameX = 0;
+        this._game._player._maxFrame = 4;
+        this._game._player._frameY = 5;
     }
 
     handleInput(input){
         if(input.includes('ArrowLeft') || input.includes('ArrowRight')){
-            this._player.setState(states.RUNNING, 1);
+            this._game._player.setState(states.RUNNING, 1);
         } else if(input.includes('Enter')){
-            this._player.setState(states.ROLLING, 2);
+            this._game._player.setState(states.ROLLING, 2) ;
         }
     }
 }
 
 export class Running extends State{
-    constructor(player){
-        super('RUNNING');
-        this._player = player;
+    constructor(game){
+        super('RUNNING', game);
     }
 
     enter(){
-        this._player._frameX = 0;
-        this._player._maxFrame = 6;
-        this._player._frameY = 3;      
+        this._game._player._frameX = 0;
+        this._game._player._maxFrame = 8;
+        this._game._player._frameY = 3;      
     }
 
     handleInput(input){
+        this._game._particles.unshift(new Dust(this._game, this._game._player._x + this._game._player._width *0.5, this._game._player._y + this._game._player._height));
+
         if(input.includes('ArrowDown')){
-            this._player.setState(states.SITTING, 0);
+            this._game._player.setState(states.SITTING, 0);
         }else if(input.includes('ArrowUp')){
-            this._player.setState(states.JUMPING, 1);
-        } else if(input.includes('Enter')){
-            this._player.setState(states.ROLLING, 2);
+            this._game._player.setState(states.JUMPING, 1);
+        } else if(input.includes('Enter')){ 
+            this._game._player.setState(states.ROLLING, 2);
         }
     }
 }
 
 export class Jumping extends State{
-    constructor(player){
-        super('JUMPING');
-        this._player = player;
+    constructor(game){
+        super('JUMPING', game);
     }
 
     enter(){
-        if(this._player.onGround()){
-            this._player._vSpeed -= 23;
+        if(this._game._player.onGround()){
+            this._game._player._vSpeed -= 23;
         }
-        this._player._frameX = 0;
-        this._player._maxFrame = 6
-        this._player._frameY = 1;
+        this._game._player._frameX = 0;
+        this._game._player._maxFrame = 6
+        this._game._player._frameY = 1;
     }
 
     handleInput(input){
-        if(this._player._vSpeed > this._player._weight){
-            this._player.setState(states.FALLING, 1);
+        if(this._game._player._vSpeed > this._game._player._weight){
+            this._game._player.setState(states.FALLING, 1);
         } else if(input.includes('Enter')){
-            this._player.setState(states.ROLLING, 2);
+            this._game._player.setState(states.ROLLING, 2);
         }
     }
 }
 
 export class Falling extends State{
-    constructor(player){
-        super('FALLING');
-        this._player = player;
+    constructor(game){
+        super('FALLING', game);
     }
 
     enter(){
-        this._player._frameX = 0;
-        this._player._maxFrame = 6
-        this._player._frameY = 2;
+        this._game._player._frameX = 0;
+        this._game._player._maxFrame = 6
+        this._game._player._frameY = 2;
     }
 
     handleInput(input){
-        if(this._player.onGround()){
-            this._player.setState(states.RUNNING, 1);
+        if(this._game._player.onGround()){
+            this._game._player.setState(states.RUNNING, 1);
         }
     }
 }
 
 export class Rolling extends State{
-    constructor(player){
-        super('ROLLING');
-        this._player = player;
+    constructor(game){
+        super('ROLLING', game);
     }
 
     enter(){
-        this._player._frameX = 0;
-        this._player._maxFrame = 6
-        this._player._frameY = 6;
+        this._game._player._frameX = 0;
+        this._game._player._maxFrame = 6;
+        this._game._player._frameY = 6;
     }
 
     handleInput(input){
-        if(!input.includes('Enter' && this._player.onGround())){
-            this._player.setState(states.RUNNING, 1);
-        } else if(!input.includes('Enter') && !this._player.onGround()){
-            this._player.setState(states.FALLING, 1);
+
+        this._game._particles.unshift(new Fire(this._game, this._game._player._x + this._game._player._width * 0.5, this._game._player._y + this._game._player._height * 0.5));
+
+        if(!input.includes('Enter') && this._game._player.onGround()){
+            this._game._player.setState(states.RUNNING, 1);
+        } else if(!input.includes('Enter') && !this._game._player.onGround()){
+            this._game._player.setState(states.FALLING, 1);
+        }else if(input.includes('Enter') && input.includes('ArrowUp') && this._game._player.onGround()){
+            this._game._player._vSpeed -=27;
         }
     }
 }

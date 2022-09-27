@@ -13,7 +13,6 @@ export class InputHandler{
                 this._keys.push(e.key);
             }else if(e.key == 'd'){
                 this._game._debug = !this._game._debug;
-                console.log(this._game._debug);
             }
 
             
@@ -27,7 +26,6 @@ export class InputHandler{
                 e.key === 'Enter'){
                 this._keys.splice(this._keys.indexOf(e.key), 1);
             }
-            console.log(e.key, this._keys);
         });
 
     }
